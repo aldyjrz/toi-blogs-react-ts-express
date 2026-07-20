@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum Role {
+  ADMIN
+  AUTHOR
+  EDITOR
+}
+
+model User {
+  id            String      @id @default(uuid())
+  email         String      @unique
+  passwordHash  String
+  name          String
+  firstName     String?
+  lastName      String?
+  bio           String?
+  avatarUrl     String?
+  role          Role        @default(AUTHOR)
+  resetToken    String?   @unique
+  resetTokenExp DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  posts         Post[]
+  activityLogs  ActivityLog[]
+  comments      Comment[]
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  posts       Post[]
+}
+
+model Tag {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  slug      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  postTags  PostTag[]
+}
+
+model Post {
+  id            String     @id @default(uuid())
+  title         String
+  slug          String     @unique
+  excerpt       String?
+  content       String     @db.Text
+  htmlContent   String?    @db.Text
+  featuredImage String?
+  gallery       String[]   @default([])
+  status        PostStatus @default(DRAFT)
+  publishedAt   DateTime?
+  readingTime   Int        @default(0)
+  authorId      String
+  author        User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId    String?
+  category      Category?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  postTags      PostTag[]
+  seo           Seo?
+  comments      Comment[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([authorId])
+  @@index([categoryId])
+}
+
+model PostTag {
+  id     String @id @default(uuid())
+  postId String
+  tagId  String
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, tagId])
+  @@index([tagId])
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  fileName  String
+  url       String
+  mimeType  String
+  size      Int
+  width     Int?
+  height    Int?
+  altText   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String?
+  author    User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  authorName String?
+  authorEmail String?
+  content   String   @db.Text
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postId])
+}
+
+model Seo {
+  id              String  @id @default(uuid())
+  postId          String  @unique
+  post            Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String[]
+  canonicalUrl    String?
+  ogTitle         String?
+  ogDescription   String?
+  ogImage         String?
+  twitterTitle    String?
+  twitterDescription String?
+  twitterImage    String?
+  robots          String? @default("index,follow")
+  noindex         Boolean @default(false)
+  nofollow        Boolean @default(false)
+  sitemapPriority Float   @default(0.8)
+  changeFreq      String  @default("weekly")
+}
+
+model Setting {
+  id    String @id @default("site")
+  key   String @unique
+  value String
+  group String @default("general")
+  updatedAt DateTime @updatedAt
+}
+
+model Menu {
+  id        String   @id @default(uuid())
+  label     String
+  url       String
+  parentId  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Page {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  content     String   @db.Text
+  htmlContent String?  @db.Text
+  status      PostStatus @default(PUBLISHED)
+  metaTitle   String?
+  metaDescription String?
+  noindex     Boolean @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Newsletter {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  verified  Boolean  @default(false)
+  token     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  entity    String?
+  entityId  String?
+  metadata  String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
