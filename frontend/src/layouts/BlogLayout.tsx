@@ -11,8 +11,7 @@ export function BlogLayout() {
           <nav className="flex items-center gap-4 text-sm">
             <Link to="/blog" className="hover:underline">Blog</Link>
             <Link to="/about" className="hover:underline">About</Link>
-            <Link to="/contact" className="hover:underline">Contact</Link>
-            <Link to="/admin" className="rounded-md bg-primary px-3 py-1.5 text-background">Admin</Link>
+             <Link to="/contact" className="hover:underline">Contact</Link>
           </nav>
         </div>
       </header>

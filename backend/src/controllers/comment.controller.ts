@@ -1,10 +1,10 @@
 import { prisma } from '@/config/prisma';
 import { authenticate } from '@/middlewares/auth';
 import { validate } from '@/middlewares/validate';
-import { createCommentSchema } from '@/validators/post.validator';
-import { Request, Response, NextFunction } from 'express';
 import { NotFoundError } from '@/utils/errors';
 import { sanitizePlainText } from '@/utils/sanitize';
+import { Request, Response, NextFunction } from 'express';
+import { createCommentSchema } from '@/validators/post.validator';
 
 async function create(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -33,6 +33,7 @@ async function list(req: Request, res: Response, next: NextFunction): Promise<vo
     const comments = await prisma.comment.findMany({
       where: { postId: req.params.postId, ...where },
       orderBy: { createdAt: 'desc' },
+      include: { author: { select: { id: true, name: true } }, post: { select: { id: true, title: true, slug: true } } },
     });
     res.json({ success: true, data: comments });
   } catch (err) {
@@ -52,8 +53,31 @@ async function moderate(req: Request, res: Response, next: NextFunction): Promis
   }
 }
 
+async function adminList(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const comments = await prisma.comment.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { author: { select: { id: true, name: true, email: true } }, post: { select: { id: true, title: true, slug: true } } },
+    });
+    res.json({ success: true, data: comments });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function adminDelete(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    await prisma.comment.delete({ where: { id: req.params.id } });
+    res.json({ success: true, message: 'Comment deleted' });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export const commentController = {
   create: [validate(createCommentSchema), create],
   list,
   moderate: [authenticate, moderate],
+  adminList: [authenticate, adminList],
+  adminDelete: [authenticate, adminDelete],
 };

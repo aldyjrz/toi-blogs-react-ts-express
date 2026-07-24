@@ -4,17 +4,18 @@ import { authenticate } from '@/middlewares/auth';
 
 async function stats(_req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const [totalPosts, publishedPosts, draftPosts, categories, tags, comments] = await Promise.all([
+    const [totalPosts, publishedPosts, draftPosts, categories, tags, totalComments, pendingComments] = await Promise.all([
       prisma.post.count(),
       prisma.post.count({ where: { status: 'PUBLISHED' } }),
       prisma.post.count({ where: { status: 'DRAFT' } }),
       prisma.category.count(),
       prisma.tag.count(),
       prisma.comment.count(),
+      prisma.comment.count({ where: { status: 'PENDING' } }),
     ]);
     res.json({
       success: true,
-      data: { totalPosts, publishedPosts, draftPosts, categories, tags, comments, visitors: 0 },
+      data: { totalPosts, publishedPosts, draftPosts, categories, tags, totalComments, pendingComments, visitors: 0 },
     });
   } catch (err) {
     next(err);

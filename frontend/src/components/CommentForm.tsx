@@ -42,7 +42,7 @@ export function CommentForm({ postId, comments }: { postId: string; comments: Co
         <Button type="submit" disabled={submitting}>{submitting ? 'Posting…' : 'Post comment'}</Button>
       </form>
       <ul className="mt-6 space-y-4">
-        {comments.map((c) => (
+        {comments.filter((c) => c.status === 'APPROVED').map((c) => (
           <li key={c.id} className="rounded-md border border-border p-3">
             <div className="mb-1 text-sm font-medium">{c.authorName ?? 'Anonymous'}</div>
             <p className="text-sm">{c.content}</p>

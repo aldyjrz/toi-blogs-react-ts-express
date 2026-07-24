@@ -39,7 +39,7 @@ export const postService = {
     const existing = await prisma.post.findUnique({ where: { slug } });
     if (existing) throw new ConflictError('Slug already exists');
     const htmlContent = input.htmlContent ?? sanitizeContent(input.content);
-    const excerpt = input.excerpt ?? generateExcerpt(htmlContent);
+    const excerpt = input.excerpt && input.excerpt.trim() ? input.excerpt : generateExcerpt(htmlContent);
     const readingTime = estimateReadingTime(input.content);
     const status = input.status;
     const data: Record<string, unknown> = {
@@ -69,7 +69,7 @@ export const postService = {
       if (conflict) throw new ConflictError('Slug already exists');
     }
     const htmlContent = input.htmlContent ?? (input.content ? sanitizeContent(input.content) : existing.htmlContent);
-    const excerpt = input.excerpt ?? (input.content ? generateExcerpt(htmlContent!) : existing.excerpt);
+    const excerpt = input.excerpt && input.excerpt.trim() ? input.excerpt : (input.content ? generateExcerpt(htmlContent!) : existing.excerpt);
     const readingTime = input.content ? estimateReadingTime(input.content) : existing.readingTime;
     const data: Record<string, unknown> = {};
     if (input.title) data.title = input.title;

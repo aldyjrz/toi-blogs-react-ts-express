@@ -15,6 +15,7 @@ export function AdminLayout() {
   const links = [
     { to: '/admin', label: 'Dashboard' },
     { to: '/admin/posts', label: 'Posts' },
+    { to: '/admin/comments', label: 'Comments' },
     { to: '/admin/categories', label: 'Categories' },
     { to: '/admin/tags', label: 'Tags' },
     { to: '/admin/media', label: 'Media' },

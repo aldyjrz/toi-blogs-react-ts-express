@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import { Seo } from '@/components/Seo';
@@ -19,10 +19,25 @@ export function AdminSettingsPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['settings'] }),
   });
 
-  const save = (key: string, value: string) => update.mutate({ key, value, group: 'general' });
-
-  const get = (key: string) => data?.data.find((s) => s.key === key)?.value ?? '';
   const [siteName, setSiteName] = useState('');
+  const [siteDescription, setSiteDescription] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!data?.data) return;
+    const map = new Map(data.data.map((s) => [s.key, s.value]));
+    if (map.has('siteName')) setSiteName(map.get('siteName')!);
+    if (map.has('siteDescription')) setSiteDescription(map.get('siteDescription')!);
+  }, [data?.data]);
+
+  const save = async (key: string, value: string) => {
+    setSaving(true);
+    try {
+      await update.mutateAsync({ key, value, group: 'general' });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <>
@@ -32,12 +47,13 @@ export function AdminSettingsPage() {
         <Card className="max-w-lg space-y-4">
           <div>
             <Label>Site Name</Label>
-            <Input defaultValue={get('siteName') || siteName} onChange={(e) => setSiteName(e.target.value)} />
-            <Button className="mt-2" size="sm" onClick={() => save('siteName', siteName)}>Save Site Name</Button>
+            <Input value={siteName} onChange={(e) => setSiteName(e.target.value)} />
+            <Button className="mt-2" size="sm" onClick={() => save('siteName', siteName)} disabled={saving}>{saving ? 'Saving…' : 'Save Site Name'}</Button>
           </div>
           <div>
             <Label>Site Description</Label>
-            <Input defaultValue={get('siteDescription')} onBlur={(e) => save('siteDescription', e.target.value)} />
+            <Input value={siteDescription} onChange={(e) => setSiteDescription(e.target.value)} />
+            <Button className="mt-2" size="sm" onClick={() => save('siteDescription', siteDescription)} disabled={saving}>{saving ? 'Saving…' : 'Save Description'}</Button>
           </div>
         </Card>
       )}

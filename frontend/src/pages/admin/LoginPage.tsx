@@ -47,7 +47,7 @@ export function LoginPage() {
             </div>
             <Button type="submit" disabled={loading} className="w-full">{loading ? 'Signing in…' : 'Sign in'}</Button>
           </div>
-          <p className="mt-4 text-xs text-foreground/50">Default admin: admin@blog.com / password123</p>
+          
         </form>
       </div>
     </>

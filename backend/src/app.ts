@@ -36,7 +36,14 @@ export function createApp(): express.Express {
 });
 
   app.use(helmet({ contentSecurityPolicy: false }));
-  app.use(cors({ origin: env.clientOrigin.split(','), credentials: true }));
+  const corsOrigins = env.clientOrigin.split(',').map((s) => s.trim()).filter(Boolean);
+  if (corsOrigins.length === 0) {
+    corsOrigins.push('http://localhost:5173', 'http://localhost:80', 'http://localhost');
+  }
+  app.use(cors({ origin: (origin, callback) => {
+    if (!origin || corsOrigins.includes(origin) || env.isProduction === false) return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  }, credentials: true }));
   app.use(compression());
   app.use(express.json({ limit: '5mb' }));
   app.use(express.urlencoded({ extended: true }));

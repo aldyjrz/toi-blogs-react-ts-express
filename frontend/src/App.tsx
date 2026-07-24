@@ -17,6 +17,7 @@ import { AdminCategoriesPage } from '@/pages/admin/CategoriesPage';
 import { AdminTagsPage } from '@/pages/admin/TagsPage';
 import { AdminMediaPage } from '@/pages/admin/MediaPage';
 import { AdminSettingsPage } from '@/pages/admin/SettingsPage';
+import { AdminCommentsPage } from '@/pages/admin/CommentsPage';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export function App() {
@@ -38,6 +39,7 @@ export function App() {
       <Route element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
         <Route path="/admin" element={<DashboardPage />} />
         <Route path="/admin/posts" element={<AdminPostsPage />} />
+        <Route path="/admin/comments" element={<AdminCommentsPage />} />
         <Route path="/admin/categories" element={<AdminCategoriesPage />} />
         <Route path="/admin/tags" element={<AdminTagsPage />} />
         <Route path="/admin/media" element={<AdminMediaPage />} />
