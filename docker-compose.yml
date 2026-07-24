@@ -14,7 +14,8 @@ services:
       - SUPABASE_URL=${SUPABASE_URL}
       - SUPABASE_SECRET_KEY=${SUPABASE_SECRET_KEY}
       - SUPABASE_STORAGE_BUCKET=${SUPABASE_STORAGE_BUCKET:-media}
-      - CLIENT_ORIGIN=${CLIENT_ORIGIN:-http://localhost:80}
+      - CLIENT_ORIGIN=https://blog.aldytoi.my.id
+      - SITE_URL=https://blog.aldytoi.my.id
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
