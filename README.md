@@ -54,13 +54,13 @@ npm run prisma:seed          # creates admin@blog.com / password123 + sample pos
 ### 4. Run (dev)
 From the root:
 ```bash
-npm run dev                  # starts backend (:4000) + frontend (:5173)
+npm run dev                  # starts backend (:4000) + frontend (:8081)
 ```
 Frontend dev server proxies `/api` to the backend.
 
-- Frontend: http://localhost:5173
+- Frontend: http://localhost:8081
 - API docs: http://localhost:4000/api-docs
-- Admin: http://localhost:5173/admin
+- Admin: http://localhost:8081/admin
 
 ## Domains (Production)
 

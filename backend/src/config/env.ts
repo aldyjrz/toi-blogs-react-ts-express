@@ -13,8 +13,8 @@ function required(key: string, fallback?: string): string {
 export const env = {
   port: Number(process.env.PORT ?? 4000),
   nodeEnv: process.env.NODE_ENV ?? 'development',
-  clientOrigin: process.env.CLIENT_ORIGIN ?? 'http://localhost:5173',
-  siteUrl: process.env.SITE_URL ?? 'http://localhost:5173',
+  clientOrigin: process.env.CLIENT_ORIGIN ?? 'http://localhost:8081',
+  siteUrl: process.env.SITE_URL ?? 'http://localhost:8081',
   jwtSecret: required('JWT_SECRET', 'dev-jwt-secret-change-me'),
   jwtRefreshSecret: required('JWT_REFRESH_SECRET', 'dev-refresh-secret-change-me'),
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '15m',

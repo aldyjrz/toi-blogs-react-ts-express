@@ -38,7 +38,7 @@ export function createApp(): express.Express {
   app.use(helmet({ contentSecurityPolicy: false }));
   const corsOrigins = env.clientOrigin.split(',').map((s) => s.trim()).filter(Boolean);
   if (corsOrigins.length === 0) {
-    corsOrigins.push('http://localhost:5173', 'http://localhost:80', 'http://localhost');
+    corsOrigins.push('http://localhost:8081', 'http://localhost:80', 'http://localhost');
   }
   app.use(cors({ origin: (origin, callback) => {
     if (!origin || corsOrigins.includes(origin) || env.isProduction === false) return callback(null, true);
