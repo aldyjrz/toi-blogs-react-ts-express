@@ -28,6 +28,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: frontend
+      args:
+        - VITE_API_URL=https://blog-api.aldytoi.my.id/api/v1
     ports:
       - "8081:8081"
     depends_on:
