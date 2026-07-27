@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 # Backend
 FROM base AS backend-builder
 WORKDIR /app/backend
-COPY backend/package.json ./
+COPY backend/package*.json ./
 RUN npm install
 COPY backend/ ./
 RUN npm run prisma:generate
