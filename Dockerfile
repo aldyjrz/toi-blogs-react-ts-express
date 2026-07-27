@@ -1,25 +1,5 @@
 FROM node:20-alpine AS base
-
-# Backend
-FROM base AS backend-builder
-WORKDIR /app/backend
-COPY backend/package*.json ./
-RUN npm install
-COPY backend/ ./
-RUN npm run prisma:generate
-RUN npm run build
-
-FROM base AS backend
-WORKDIR /app/backend
-ENV NODE_ENV=production
-COPY backend/package.json ./
-RUN npm install --only=production
-COPY --from=backend-builder /app/backend/dist ./dist
-COPY --from=backend-builder /app/backend/prisma ./prisma
-COPY --from=backend-builder /app/backend/node_modules/.prisma ./node_modules/.prisma
-EXPOSE 4000
-CMD ["sh", "-c", "npm start"]
-
+ 
 # Frontend
 FROM base AS frontend-builder
 WORKDIR /app/frontend
