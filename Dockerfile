@@ -18,7 +18,7 @@ COPY --from=backend-builder /app/backend/dist ./dist
 COPY --from=backend-builder /app/backend/prisma ./prisma
 COPY --from=backend-builder /app/backend/node_modules/.prisma ./node_modules/.prisma
 EXPOSE 4000
-CMD ["sh", "-c", "npm run prisma:deploy && npm start"]
+CMD ["sh", "-c", "npm start"]
 
 # Frontend
 FROM base AS frontend-builder
