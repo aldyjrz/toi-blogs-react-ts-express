@@ -10,7 +10,7 @@ export function BlogLayout() {
           <Link to="/" className="text-lg font-bold">{SITE_NAME}</Link>
           <nav className="flex items-center gap-4 text-sm">
             <Link to="/blog" className="hover:underline">Blog</Link>
-            <Link to="/about" className="hover:underline">About</Link>
+            <Link to="/about" className="hover:underline">About me?</Link>
              <Link to="/contact" className="hover:underline">Contact</Link>
           </nav>
         </div>

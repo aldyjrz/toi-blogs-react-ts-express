@@ -15,71 +15,48 @@ interface CmsPage {
 }
 const STATIC_PAGES: Record<string, { title: string; content: string }> = {
   about: {
-    title: 'About Us',
+    title: 'About Me',
     content: `
-      <p>
-        Welcome to our technology blog, a platform dedicated to sharing knowledge,
-        tutorials, insights, and practical guides about software development,
-        programming, and modern technology.
-      </p>
-
-      <p>
-        Our goal is to provide high-quality articles that help developers,
-        technology enthusiasts, and beginners understand various topics such as
-        web development, backend engineering, databases, cloud computing,
-        cybersecurity, artificial intelligence, and emerging technologies.
-      </p>
-
-      <p>
-        Every article is created with a focus on accuracy, simplicity, and
-        practical implementation so readers can apply the knowledge directly
-        to their projects and daily work.
-      </p>
-
-      <p>
-        We believe technology should be accessible to everyone. Through this
-        blog, we aim to document our learning journey while helping others
-        improve their technical skills.
-      </p>
-
-      <p>
-        Website Owner:
-        <a href="https://aldytoi.my.id" target="_blank">
-          Aldi Pranata Portfolio
-        </a>
-      </p>
-
-      <p>
-        Thank you for visiting our website. We hope our content can provide
-        useful information and valuable insights for your technology journey.
-      </p>
-    `,
+     <p> Halo! Saya Aldi Pranata, selamat datang di blog pribadi saya. </p> <p> Blog ini adalah tempat saya berbagi aktivitas sehari-hari, pengalaman, proses belajar, serta berbagai hal menarik seputar dunia pemrograman dan teknologi modern. </p> <p> Sebagian besar artikel yang saya tulis berasal dari pengalaman nyata ketika mengerjakan berbagai proyek, menghadapi tantangan, dan menemukan solusi dalam pengembangan web, backend engineering, database, cloud computing, keamanan siber, kecerdasan buatan (AI), serta topik lain di dunia software development. </p> <p> Saya senang menulis materi teknis dengan bahasa yang sederhana dan mudah dipahami. Baik Anda seorang pemula maupun developer yang sudah berpengalaman, saya berharap artikel di blog ini dapat memberikan wawasan baru yang bisa langsung diterapkan dalam proyek atau pekerjaan Anda. </p> <p> Blog ini juga menjadi tempat saya mendokumentasikan perjalanan belajar yang terus berkembang. Dunia teknologi selalu berubah dengan cepat, dan saya percaya bahwa berbagi pengetahuan adalah salah satu cara terbaik untuk terus belajar dan berkembang bersama. </p> <p> Jika Anda ingin mengenal saya lebih jauh atau melihat portofolio proyek yang pernah saya kerjakan, silakan kunjungi <a href="https://aldytoi.my.id" target="_blank" rel="noopener noreferrer"> aldytoi.my.id </a>. </p> <p> Terima kasih telah berkunjung. Semoga artikel yang saya bagikan dapat memberikan manfaat, menambah wawasan, dan membantu perjalanan Anda dalam dunia teknologi. </p> <section class="contact-links"> <h2>Terhubung dengan Saya</h2> <ul> <li> <strong>Portofolio:</strong> <a href="https://aldytoi.my.id" target="_blank" rel="noopener noreferrer"> aldytoi.my.id </a> </li> <li> <strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/aldytoi" target="_blank" rel="noopener noreferrer"> linkedin.com/in/aldytoi </a> </li> <li> <strong>GitHub:</strong> <a href="https://github.com/AldyJrz" target="_blank" rel="noopener noreferrer"> github.com/AldyJrz </a> </li> <li> <strong>Email:</strong> <a href="mailto:aldyjrz@gmail.com"> aldyjrz@gmail.com </a> </li> </ul> </section>`,
   },
 
   contact: {
     title: 'Contact',
     content: `
-      <p>
-        We appreciate your feedback, questions, suggestions, and collaboration
-        opportunities. If you have any inquiries regarding our articles,
-        partnerships, or other matters, feel free to contact us.
-      </p>
+     
+<h2>Hubungi Saya</h2>
 
-      <p>
-        You can reach us through the following email address:
-      </p>
+<p>
+  Terima kasih telah mengunjungi blog ini. Saya sangat menghargai setiap
+  pertanyaan, masukan, maupun saran yang Anda berikan.
+</p>
 
-      <p>
-        Email:
-        <a href="mailto:aldyjrz@gmail.com">
-          aldyjrz@gmail.com
-        </a>
-      </p>
+<p>
+  Jika Anda ingin berdiskusi seputar pemrograman, teknologi, memberikan
+  feedback terhadap artikel, melaporkan kesalahan, atau mengajak saya
+  berkolaborasi dalam sebuah proyek, jangan ragu untuk menghubungi saya.
+</p>
 
-      <p>
-        We will try to respond to messages as soon as possible. Please note that
-        response times may vary depending on the number of requests received.
-      </p>
+<p>
+  Anda dapat menghubungi saya melalui email berikut:
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <a href="mailto:aldyjrz@gmail.com">aldyjrz@gmail.com</a>
+</p>
+
+<p>
+  Saya akan berusaha membalas setiap pesan secepat mungkin. Mohon pengertiannya
+  apabila terkadang membutuhkan waktu lebih lama, terutama saat sedang sibuk
+  dengan pekerjaan atau proyek yang sedang dikerjakan.
+</p>
+
+<p>
+  Terima kasih atas dukungan dan kunjungan Anda. Saya berharap blog ini dapat
+  terus memberikan manfaat dan menjadi tempat berbagi ilmu bagi para developer
+  dan pecinta teknologi.
+</p> 
     `,
   },
 
