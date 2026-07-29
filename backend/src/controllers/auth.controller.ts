@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { authService } from '@/services/auth.service';
 import { authRateLimiter } from '@/middlewares/rateLimiter';
+import { authenticate } from '@/middlewares/auth';
+import { validate } from '@/middlewares/validate';
+import { updateProfileSchema } from '@/validators/auth.validator';
 
 async function login(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -51,6 +54,15 @@ async function changePassword(req: Request, res: Response, next: NextFunction): 
   }
 }
 
+async function updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const user = await authService.updateProfile(req.user!.id, req.body);
+    res.json({ success: true, data: user });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const token = await authService.forgotPassword(req.body.email);
@@ -76,6 +88,7 @@ export const authController = {
   logout,
   me,
   changePassword,
+  updateProfile: [authenticate, validate(updateProfileSchema), updateProfile],
   forgotPassword: [authRateLimiter, forgotPassword],
   resetPassword,
 };

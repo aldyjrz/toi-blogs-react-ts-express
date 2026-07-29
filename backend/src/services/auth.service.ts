@@ -2,7 +2,7 @@ import { prisma as db } from '@/config/prisma';
 import { comparePassword, hashPassword, signAccessToken, signRefreshToken, verifyRefreshToken } from '@/utils/auth';
 import { randomToken } from '@/utils/helpers';
 import { UnauthorizedError, NotFoundError, ConflictError } from '@/utils/errors';
-import type { LoginInput, RegisterInput, ChangePasswordInput, ResetPasswordInput } from '@/validators/auth.validator';
+import type { LoginInput, RegisterInput, ChangePasswordInput, ResetPasswordInput, UpdateProfileInput } from '@/validators/auth.validator';
 
 interface AuthResult {
   accessToken: string;
@@ -84,6 +84,15 @@ export const authService = {
       select: { id: true, email: true, name: true, role: true, bio: true, avatarUrl: true, createdAt: true },
     });
     if (!user) throw new NotFoundError('User not found');
+    return user;
+  },
+
+  async updateProfile(userId: string, input: UpdateProfileInput) {
+    const user = await db.user.update({
+      where: { id: userId },
+      data: input,
+      select: { id: true, email: true, name: true, role: true, bio: true, avatarUrl: true, createdAt: true },
+    });
     return user;
   },
 };

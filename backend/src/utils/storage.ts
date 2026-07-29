@@ -17,19 +17,24 @@ export async function uploadImageToSupabase(buffer: Buffer, fileName: string): P
     .toBuffer();
   const path = `uploads/${Date.now()}-${fileName.replace(/\s+/g, '-')}.webp`;
 
-  if (env.supabaseUrl && env.supabaseSecretKey) {
+  if (env.supabaseUrl && env.supabaseServiceKey) {
     const res = await fetch(`${env.supabaseUrl}/storage/v1/object/${env.supabaseStorageBucket}/${path}`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${env.supabaseSecretKey}`,
+        Authorization: `Bearer ${env.supabaseServiceKey}`,
         'Content-Type': 'image/webp',
         'x-upsert': 'true',
       },
       body: resized,
     });
-    if (!res.ok) {
-      throw new Error(`Supabase storage upload failed: ${res.status}`);
-    }
+   if (!res.ok) {
+  const error = await res.text();
+  console.error(error);
+
+  throw new Error(
+    `Supabase storage upload failed: ${res.status} - ${error}`
+  );
+}
     const base = env.supabaseUrl.replace(/\/$/, '');
     return {
       url: `${base}/storage/v1/object/public/${env.supabaseStorageBucket}/${path}`,

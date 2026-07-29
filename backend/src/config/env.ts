@@ -23,6 +23,7 @@ export const env = {
   supabaseUrl: process.env.SUPABASE_URL ?? '',
   supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY ?? '',
   supabaseSecretKey: process.env.SUPABASE_SECRET_KEY ?? '',
+  supabaseServiceKey: process.env.SUPABASE_KEY ?? '',
   supabaseStorageBucket: process.env.SUPABASE_STORAGE_BUCKET ?? 'media',
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS ?? 900000),
   rateLimitMax: Number(process.env.RATE_LIMIT_MAX ?? 200),

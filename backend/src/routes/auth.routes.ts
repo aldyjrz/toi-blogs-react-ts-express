@@ -9,6 +9,7 @@ import {
   forgotPasswordSchema,
   resetPasswordSchema,
   changePasswordSchema,
+  updateProfileSchema,
 } from '@/validators/auth.validator';
 
 const router = Router();
@@ -19,10 +20,12 @@ router.post('/refresh', validate(refreshSchema), authController.refresh as Reque
 router.post('/logout', authenticate, authController.logout as RequestHandler);
 router.get('/me', authenticate, authController.me as RequestHandler);
 router.post('/change-password', authenticate, validate(changePasswordSchema), authController.changePassword as RequestHandler);
+router.put('/profile', authenticate, validate(updateProfileSchema), ...(authController.updateProfile as unknown as RequestHandler[]));
 router.post('/forgot-password', ...(authController.forgotPassword as unknown as RequestHandler[]));
 router.post('/reset-password', validate(resetPasswordSchema), authController.resetPassword as RequestHandler);
 
 void loginSchema;
 void forgotPasswordSchema;
+void updateProfileSchema;
 
 export default router;

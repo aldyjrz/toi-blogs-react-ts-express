@@ -16,7 +16,7 @@ async function uploadHandler(req: Request, res: Response, next: NextFunction): P
         data: {
           fileName: file.originalname,
           url: result.url,
-          mimeType: 'image/webp',
+          mimeType: 'image/*',
           size: result.size,
           width: result.width,
           height: result.height,

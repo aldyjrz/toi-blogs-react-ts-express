@@ -71,6 +71,11 @@ Set these in your deployment environment:
 - Frontend: `VITE_API_URL=https://blog-api.aldytoi.my.id/api/v1`, `VITE_SITE_URL=https://blog.aldytoi.my.id`
 - Backend: `CLIENT_ORIGIN=https://blog.aldytoi.my.id`, `SITE_URL=https://blog.aldytoi.my.id`
 
+## Development
+
+- Frontend: `http://localhost:8081`
+- Backend: `http://localhost:4000`
+
 ## API
 
 All routes are under `/api/v1/` (see `/api-docs` for full OpenAPI spec).

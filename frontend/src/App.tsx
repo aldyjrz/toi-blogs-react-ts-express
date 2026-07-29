@@ -18,6 +18,8 @@ import { AdminTagsPage } from '@/pages/admin/TagsPage';
 import { AdminMediaPage } from '@/pages/admin/MediaPage';
 import { AdminSettingsPage } from '@/pages/admin/SettingsPage';
 import { AdminCommentsPage } from '@/pages/admin/CommentsPage';
+import { AdminProfilePage } from '@/pages/admin/AdminProfilePage';
+import { AdminPasswordPage } from '@/pages/admin/AdminPasswordPage';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export function App() {
@@ -40,6 +42,8 @@ export function App() {
         <Route path="/admin" element={<DashboardPage />} />
         <Route path="/admin/posts" element={<AdminPostsPage />} />
         <Route path="/admin/comments" element={<AdminCommentsPage />} />
+        <Route path="/admin/profile" element={<AdminProfilePage />} />
+        <Route path="/admin/password" element={<AdminPasswordPage />} />
         <Route path="/admin/categories" element={<AdminCategoriesPage />} />
         <Route path="/admin/tags" element={<AdminTagsPage />} />
         <Route path="/admin/media" element={<AdminMediaPage />} />
