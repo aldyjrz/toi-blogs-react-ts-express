@@ -95,4 +95,16 @@ export const postService = {
     if (!existing) throw new NotFoundError('Post not found');
     await postRepository.remove(id);
   },
+
+  async incrementView(slug: string) {
+    return postRepository.incrementView(slug);
+  },
+
+  async findMostViewed() {
+    return postRepository.findMostViewed();
+  },
+
+  async findRelated(id: string) {
+    return postRepository.findRelated(id);
+  }
 };

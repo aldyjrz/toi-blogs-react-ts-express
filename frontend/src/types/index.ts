@@ -62,6 +62,7 @@ export interface Post {
   publishedAt?: string;
   createdAt?: string;
   readingTime: number;
+  viewCount?: number;
   author: Author;
   category?: CategoryRef;
   postTags: { tag: TagRef }[];

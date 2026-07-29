@@ -36,6 +36,7 @@ async function main(): Promise<void> {
       status: 'PUBLISHED',
       publishedAt: new Date(),
       readingTime: 1,
+      viewCount: 0,
       authorId: admin.id,
       categoryId: tech.id,
       postTags: { create: { tagId: web.id } },

@@ -93,4 +93,55 @@ export const postRepository = {
   async totalCount(): Promise<number> {
     return prisma.post.count();
   },
+  async findMostViewed(limit = 5): Promise<Post[]> {
+    return prisma.post.findMany({
+      where: { status: 'PUBLISHED' },
+      orderBy: { viewCount: 'desc' },
+      take: limit,
+      include: {
+        author: { select: { id: true, name: true, avatarUrl: true } },
+        category: { select: { id: true, name: true, slug: true } },
+        postTags: { include: { tag: { select: { id: true, name: true, slug: true } } } },
+        seo: true,
+      },
+    });
+  },
+  async incrementView(slug: string): Promise<Post | null> {
+    return prisma.post.update({
+      where: { slug },
+      data: { viewCount: { increment: 1 } },
+      include: {
+        author: { select: { id: true, name: true, avatarUrl: true } },
+        category: { select: { id: true, name: true, slug: true } },
+        postTags: { include: { tag: { select: { id: true, name: true, slug: true } } } },
+        seo: true,
+        comments: { where: { status: 'APPROVED' }, orderBy: { createdAt: 'desc' } },
+      },
+    });
+  },
+  async findRelated(postId: string, limit = 3): Promise<Post[]> {
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+      select: { categoryId: true, postTags: { select: { tagId: true } } },
+    });
+    if (!post) return [];
+    const tagIds = post.postTags.map((pt) => pt.tagId);
+    return prisma.post.findMany({
+      where: {
+        status: 'PUBLISHED',
+        id: { not: postId },
+        OR: [
+          { categoryId: post.categoryId ?? undefined },
+          { postTags: { some: { tagId: { in: tagIds } } } },
+        ],
+      },
+      take: limit,
+      include: {
+        author: { select: { id: true, name: true, avatarUrl: true } },
+        category: { select: { id: true, name: true, slug: true } },
+        postTags: { include: { tag: { select: { id: true, name: true, slug: true } } } },
+        seo: true,
+      },
+    });
+  },
 };

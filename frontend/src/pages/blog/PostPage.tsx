@@ -1,60 +1,66 @@
 import { useParams, Link } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
-import { usePost } from '@/hooks/usePosts';
+import { usePost, useIncrementView } from '@/hooks/usePosts';
 import { formatDate, formatReadingTime } from '@/lib/utils';
 import { SITE_URL } from '@/lib/constants';
 import { CommentForm } from '@/components/CommentForm';
+import { RelatedArticles } from '@/components/RelatedArticles';
 
 import { useEffect, useRef } from 'react';
- export function PostPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const { data, isLoading } = usePost(slug ?? '');
-  const post = data?.data;
-  const contentRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-  const container = contentRef.current;
+  export function PostPage() {
+   const { slug } = useParams<{ slug: string }>();
+   const { data, isLoading } = usePost(slug ?? '');
+   const post = data?.data;
+   const contentRef = useRef<HTMLDivElement>(null);
+   const incrementView = useIncrementView(slug ?? '');
+   useEffect(() => {
+   const container = contentRef.current;
 
-  if (!container) return;
+   if (!container) return;
 
-  const preBlocks = container.querySelectorAll("pre");
+   const preBlocks = container.querySelectorAll("pre");
 
-  preBlocks.forEach((pre) => {
+   preBlocks.forEach((pre) => {
 
-    // cegah duplicate button
-    if (pre.querySelector(".copy-code-btn")) return;
+     // cegah duplicate button
+     if (pre.querySelector(".copy-code-btn")) return;
 
-    const button = document.createElement("button");
+     const button = document.createElement("button");
 
-    button.className = "copy-code-btn";
-    button.innerText = "Copy";
+     button.className = "copy-code-btn";
+     button.innerText = "Copy";
 
-    button.onclick = async () => {
-      const code = pre.querySelector("code");
+     button.onclick = async () => {
+       const code = pre.querySelector("code");
 
-  const text = code
-    ? code.innerText
-    : pre.cloneNode(true) as HTMLElement;
+   const text = code
+     ? code.innerText
+     : pre.cloneNode(true) as HTMLElement;
 
-  const content = typeof text === "string"
-    ? text
-    : text.innerText.replace("Copy", "");
+   const content = typeof text === "string"
+     ? text
+     : text.innerText.replace("Copy", "");
 
-  await navigator.clipboard.writeText(content);
+   await navigator.clipboard.writeText(content);
 
-  button.innerText = "Copied!";
+   button.innerText = "Copied!";
 
-  setTimeout(() => {
-    button.innerText = "Copy";
-  }, 2000);
-    };
+   setTimeout(() => {
+     button.innerText = "Copy";
+   }, 2000);
+     };
 
-    pre.appendChild(button);
-  });
+     pre.appendChild(button);
+   });
 
-}, [post?.htmlContent]);
+ }, [post?.htmlContent]);
 
-  if (isLoading) return <div className="mx-auto max-w-3xl px-4 py-12">Loading…</div>;
-  if (!post) return <div className="mx-auto max-w-3xl px-4 py-12">Post not found.</div>;
+ useEffect(() => {
+   if (slug) incrementView.mutate();
+ }, [slug]);
+
+ if (isLoading) return <div className="mx-auto max-w-3xl px-4 py-12">Loading…</div>;
+ if (!post) return <div className="mx-auto max-w-3xl px-4 py-12">Post not found.</div>;
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -142,7 +148,8 @@ import { useEffect, useRef } from 'react';
            </div>
          </nav>
          <CommentForm postId={post.id} comments={post.comments ?? []} />
-       </article>
-    </>
+        </article>
+        <RelatedArticles postId={post.id} />
+      </>
   );
 }

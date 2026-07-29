@@ -1,13 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Seo } from '@/components/Seo';
-import { usePosts } from '@/hooks/usePosts';
+import { usePosts, useMostViewed } from '@/hooks/usePosts';
 import { PostCard } from '@/components/PostCard';
 import { SITE_URL, SITE_NAME } from '@/lib/constants';
 
 export function HomePage() {
   const { data, isLoading } = usePosts({ status: 'PUBLISHED', limit: 12 });
+  const { data: mostViewedData } = useMostViewed(5);
   const navigate = useNavigate();
   const posts = data?.data ?? [];
+  const mostViewed = mostViewedData?.data ?? [];
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -38,6 +40,17 @@ export function HomePage() {
           <Link to="/blog" className="sr-only">Blog</Link>
         </div>
       </section>
+
+      {mostViewed.length > 0 && (
+        <section className="mx-auto max-w-5xl px-4 py-12">
+          <h2 className="mb-6 text-2xl font-bold">Most Viewed</h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {mostViewed.map((p) => (
+              <PostCard key={p.id} post={p} />
+            ))}
+          </div>
+        </section>
+      )}
     </>
   );
 }

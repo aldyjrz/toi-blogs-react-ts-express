@@ -50,10 +50,40 @@ async function remove(req: Request, res: Response, next: NextFunction): Promise<
   }
 }
 
+async function incrementView(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const post = await postService.incrementView(req.params.slug);
+    res.json({ success: true, data: post });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function mostViewed(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const posts = await postService.findMostViewed();
+    res.json({ success: true, data: posts });
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function related(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const posts = await postService.findRelated(req.params.id);
+    res.json({ success: true, data: posts });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export const postController = {
   list,
   getBySlug,
   create: [authenticate, authorize('ADMIN', 'EDITOR', 'AUTHOR'), validate(createPostSchema), create],
   update: [authenticate, authorize('ADMIN', 'EDITOR', 'AUTHOR'), validate(updatePostSchema), update],
   remove: [authenticate, authorize('ADMIN', 'EDITOR'), remove],
+  incrementView,
+  mostViewed,
+  related,
 };

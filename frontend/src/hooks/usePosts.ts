@@ -61,3 +61,29 @@ export function useDeletePost() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
   });
 }
+
+export function useMostViewed(limit = 5) {
+  return useQuery({
+    queryKey: ['posts', 'most-viewed', limit],
+    queryFn: () => apiFetch<{ data: Post[] }>(`/posts/most-viewed?limit=${limit}`),
+  });
+}
+
+export function useRelatedPosts(id: string, limit = 3) {
+  return useQuery({
+    queryKey: ['posts', 'related', id, limit],
+    queryFn: () => apiFetch<{ data: Post[] }>(`/posts/${id}/related?limit=${limit}`),
+    enabled: !!id,
+  });
+}
+
+export function useIncrementView(slug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => apiFetch<{ data: Post }>(`/posts/slug/${slug}/view`, { method: 'POST' }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['post', slug] });
+      qc.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+}
