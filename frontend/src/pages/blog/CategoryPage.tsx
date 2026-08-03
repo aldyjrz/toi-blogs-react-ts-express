@@ -4,7 +4,7 @@ import { Seo } from '@/components/Seo';
 import { usePosts } from '@/hooks/usePosts';
 import { PostCard } from '@/components/PostCard';
 import { SITE_URL } from '@/lib/constants';
-
+import Loading from '@/components/ui/Loading';
 export function CategoryPage() {
   const { slug } = useParams<{ slug: string }>();
   const [page, setPage] = useState(1);
@@ -16,7 +16,7 @@ export function CategoryPage() {
       <Seo title={`Category: ${slug}`} canonical={`${SITE_URL}/blog/category/${slug}`} />
       <section className="mx-auto max-w-5xl px-4 py-12">
         <h1 className="mb-8 text-3xl font-bold capitalize">{slug?.replace(/-/g, ' ')}</h1>
-        {isLoading ? <p>Loading…</p> : (
+        {isLoading ? <Loading / > : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((p) => <PostCard key={p.id} post={p} />)}
           </div>

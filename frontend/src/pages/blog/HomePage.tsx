@@ -3,7 +3,7 @@ import { Seo } from '@/components/Seo';
 import { usePosts, useMostViewed } from '@/hooks/usePosts';
 import { PostCard } from '@/components/PostCard';
 import { SITE_URL, SITE_NAME } from '@/lib/constants';
-
+import Loading from '@/components/ui/Loading';
 export function HomePage() {
   const { data, isLoading } = usePosts({ status: 'PUBLISHED', limit: 12 });
   const { data: mostViewedData } = useMostViewed(5);
@@ -23,11 +23,11 @@ export function HomePage() {
       <Seo title="Home" canonical={`${SITE_URL}/`} jsonLd={jsonLd} />
       <section className="mx-auto max-w-5xl px-4 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold tracking-tight">Latest Articles</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Latest Posts</h1>
           <p className="mt-2 text-foreground/70">Insights, tutorials and stories.</p>
         </div>
         {isLoading ? (
-          <p>Loading…</p>
+          <Loading />
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((p) => (

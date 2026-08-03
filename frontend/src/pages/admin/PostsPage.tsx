@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Seo } from '@/components/Seo';
 import { usePosts, useCreatePost, useDeletePost, useUpdatePost } from '@/hooks/usePosts';
 import { useCategories, useTags, useCreateCategory, useCreateTag } from '@/hooks/useTaxonomy';
 import { apiFetch } from '@/lib/api';
-import { getToken } from '@/lib/api';
 import { Input, Label } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Input';
 import { formatDate } from '@/lib/utils';
 import type { Post } from '@/types';
-
+import RichEditor from '@/components/RichEditor';
+ 
 function slugify(input: string): string {
   return input.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').slice(0, 120);
 }
@@ -40,9 +40,8 @@ export function AdminPostsPage() {
   const [seo, setSeo] = useState({ metaTitle: '', metaDescription: '' });
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newTagName, setNewTagName] = useState('');
-  const editorRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
+ 
+ 
   const createCategoryAndSelect = async () => {
     const name = newCategoryName.trim();
     if (!name) return;
@@ -61,58 +60,7 @@ export function AdminPostsPage() {
     setNewTagName('');
   };
 
-  const exec = (command: string, value?: string) => {
-    editorRef.current?.focus();
-    document.execCommand(command, false, value);
-    syncEditor();
-  };
-
-  const syncEditor = useCallback(() => {
-    if (editorRef.current) {
-      setForm((f) => ({ ...f, content: editorRef.current!.innerHTML }));
-    }
-  }, []);
-
-  const handleEditorPaste = async (e: React.ClipboardEvent<HTMLDivElement>) => {
-    const items = e.clipboardData?.items;
-    if (!items) return;
-    for (const item of Array.from(items)) {
-      if (item.type.indexOf('image') !== -1) {
-        e.preventDefault();
-        const file = item.getAsFile();
-        if (file) await uploadAndInsertImage(file);
-        return;
-      }
-    }
-  };
-
-  const uploadAndInsertImage = async (file: File) => {
-    try {
-      const fd = new FormData();
-      fd.append('files', file);
-      const res = await fetch('/api/v1/media', {
-        method: 'POST',
-        body: fd,
-        headers: { Authorization: `Bearer ${getToken() ?? '' }` },
-      });
-      if (!res.ok) throw new Error('Upload failed');
-      const data = await res.json();
-      const url = data?.data?.[0]?.url;
-      if (url) {
-        exec('insertImage', url);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      await uploadAndInsertImage(file);
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    }
-  };
+   
 
   const openEdit = async (post: Post) => {
     setEditingId(post.id);
@@ -127,11 +75,7 @@ export function AdminPostsPage() {
     });
     setSeo({ metaTitle: post.seo?.metaTitle ?? '', metaDescription: post.seo?.metaDescription ?? '' });
     setShowForm(true);
-    setTimeout(() => {
-      if (editorRef.current) {
-        editorRef.current.innerHTML = post.htmlContent ?? post.content;
-      }
-    }, 0);
+    
   };
 
   const resetForm = () => {
@@ -206,35 +150,16 @@ export function AdminPostsPage() {
                 <Input value={form.featuredImage} onChange={(e) => setForm({ ...form, featuredImage: e.target.value })} />
               </div>
             </div>
-            <div>
-              <Label>Content</Label>
-              <div className="mt-1 flex flex-wrap gap-1 rounded-md border border-border bg-muted/30 p-1">
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('bold')} title="Bold">B</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('italic')} title="Italic"><i>I</i></Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('underline')} title="Underline"><u>U</u></Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('strikeThrough')} title="Strike"><s>S</s></Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('formatBlock', 'H2')} title="Heading 2">H2</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('formatBlock', 'H3')} title="Heading 3">H3</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('formatBlock', 'P')} title="Paragraph">P</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('formatBlock', 'BLOCKQUOTE')} title="Quote">“</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('insertHorizontalRule')} title="Divider">—</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => { const url = prompt('Image URL:'); if (url) exec('insertImage', url); }} title="Insert Image URL">🖼</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => fileInputRef.current?.click()} title="Upload Image">📁</Button>
-                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
-                <Button type="button" variant="ghost" size="sm" onClick={() => exec('insertHTML', '<pre><code>code</code></pre>')} title="Code Block">{"</>"}</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => { const url = prompt('YouTube URL:'); if (url) exec('insertHTML', `<iframe width="560" height="315" src="${url}" title="YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`); }} title="Youtube Embed">▶</Button>
-                <Button type="button" variant="ghost" size="sm" onClick={() => { const html = prompt('Embed HTML:'); if (html) exec('insertHTML', html); }} title="HTML Embed">"{'</>'}{"'"}</Button>
-              </div>
-              <div
-                ref={editorRef}
-                contentEditable
-                onInput={syncEditor}
-                onPaste={handleEditorPaste}
-                suppressContentEditableWarning
-                className="min-h-[200px] rounded-md border border-border bg-background px-3 py-2 prose-editor focus:outline-none focus:ring-2 focus:ring-primary"
-                dangerouslySetInnerHTML={{ __html: form.content }}
-              />
-            </div>
+            
+           <RichEditor
+    value={form.content}
+    onChange={(html) =>
+        setForm(prev => ({
+            ...prev,
+            content: html,
+        }))
+    }
+/> 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <Label>Category</Label>

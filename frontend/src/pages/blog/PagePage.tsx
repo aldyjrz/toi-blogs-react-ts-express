@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiFetch } from '@/lib/api';
 import { Seo } from '@/components/Seo';
 import { SITE_URL } from '@/lib/constants';
-
+import Loading from '@/components/ui/Loading';
 interface CmsPage {
   title: string;
   slug: string;
@@ -217,7 +217,7 @@ export function PagePage() {
   const page = data?.data;
   const fallback = slug ? STATIC_PAGES[slug] : undefined;
 
-  if (isLoading) return <div className="mx-auto max-w-3xl px-4 py-12">Loading…</div>;
+  if (isLoading) return <Loading />;
   if (!page && !fallback) return <div className="mx-auto max-w-3xl px-4 py-12">Page not found.</div>;
 
   const title = page?.title ?? fallback?.title ?? '';

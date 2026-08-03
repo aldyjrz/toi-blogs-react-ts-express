@@ -5,7 +5,7 @@ import { formatDate, formatReadingTime } from '@/lib/utils';
 import { SITE_URL } from '@/lib/constants';
 import { CommentForm } from '@/components/CommentForm';
 import { RelatedArticles } from '@/components/RelatedArticles';
-
+import Loading from '@/components/ui/Loading';
 import { useEffect, useRef } from 'react';
   export function PostPage() {
    const { slug } = useParams<{ slug: string }>();
@@ -59,7 +59,7 @@ import { useEffect, useRef } from 'react';
    if (slug) incrementView.mutate();
  }, [slug]);
 
- if (isLoading) return <div className="mx-auto max-w-3xl px-4 py-12">Loading…</div>;
+ if (isLoading) return <Loading />;
  if (!post) return <div className="mx-auto max-w-3xl px-4 py-12">Post not found.</div>;
 
   const jsonLd = {
