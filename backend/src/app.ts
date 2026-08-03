@@ -45,9 +45,7 @@ export function createApp(): express.Express {
     'https://aldytoi.my.id'
 
 );
-  if (corsOrigins.length === 0) {
-    corsOrigins.push('http://localhost:8081', 'http://localhost:80', 'http://localhost');
-  }
+  
   app.use(cors({ origin: (origin, callback) => {
     if (!origin || corsOrigins.includes(origin) || env.isProduction === false) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
