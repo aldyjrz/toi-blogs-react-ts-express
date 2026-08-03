@@ -93,7 +93,7 @@ export const postRepository = {
   async totalCount(): Promise<number> {
     return prisma.post.count();
   },
-  async findMostViewed(limit = 5): Promise<Post[]> {
+  async findMostViewed(limit = 3): Promise<Post[]> {
     return prisma.post.findMany({
       where: { status: 'PUBLISHED' },
       orderBy: { viewCount: 'desc' },
