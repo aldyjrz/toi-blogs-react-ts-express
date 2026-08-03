@@ -37,6 +37,14 @@ export function createApp(): express.Express {
 
   app.use(helmet({ contentSecurityPolicy: false }));
   const corsOrigins = env.clientOrigin.split(',').map((s) => s.trim()).filter(Boolean);
+  corsOrigins.push(
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://localhost:3000',
+  'https://blog.aldytoi.my.id',
+    'https://aldytoi.my.id'
+
+);
   if (corsOrigins.length === 0) {
     corsOrigins.push('http://localhost:8081', 'http://localhost:80', 'http://localhost');
   }
